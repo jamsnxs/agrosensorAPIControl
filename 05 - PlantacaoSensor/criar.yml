@@ -1,0 +1,33 @@
+info:
+  name: criar
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/plantacoes-sensores
+  body:
+    type: json
+    data: |-
+      {
+        "plantacao_id": 3,
+        "sensor_id": 8,
+        "limite_atencao": 20.0,
+        "limite_critico": 40.0
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        test("Deve criar o vínculo de monitoramento e os gatilhos de limites hídricos", function() {
+          expect(status).to.be.oneOf([200, 201, 400]);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,35 @@
+info:
+  name: buscarPorID
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:3000/api/sensores/1
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const sensor = res.getBody();
+
+        if (status === 200) {
+          test("Deve encontrar as especificações do sensor pelo ID", function() {
+            expect(status).to.equal(200);
+            expect(sensor.id).to.equal(1);
+            expect(sensor).to.have.property('tipo');
+            expect(sensor).to.have.property('unidade');
+          });
+        } else if (status === 404) {
+          test("Deve retornar 404 caso o sensor não exista", function() {
+            expect(status).to.equal(404);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

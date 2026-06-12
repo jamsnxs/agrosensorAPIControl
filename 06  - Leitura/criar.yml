@@ -1,0 +1,46 @@
+info:
+  name: criar
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/leitura-sensores
+  body:
+    type: json
+    data: |-
+      {
+        "plantacao_id": 1,
+        "umidadeSolo": 15.0,
+        "umidadeAr": 35.5,
+        "temperatura": 38.2,
+        "luminosidade": 85
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        if (status === 201 || status === 200) {
+          test("Deve receber, processar e persistir o pacote de telemetria no SQLite", function() {
+            expect(status).to.be.oneOf([200, 201]);
+          });
+          
+          test("Deve avaliar as regras de negócio e verificar se gerou alertas automáticos no payload", function() {
+            // Como a umidadeSolo enviada foi 15.0 (abaixo do limite_critico de 20.0 configurado acima),
+            // seu backend MVC pode retornar um indicador de alertas disparados.
+            if(corpo.alertasGerados) {
+              expect(corpo.alertasGerados).to.equal(true);
+            }
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,45 @@
+info:
+  name: criar
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/plantacoes
+  body:
+    type: json
+    data: |-
+      {
+        "usuario_id": 1,
+        "dispositivo_id": 1,
+        "nome": "Cultivo de Feijão - Área Norte",
+        "tipo": "FEIJAO",
+        "data_inicio": "2026-06-12T00:00:00.000Z",
+        "descricao": "Lote experimental voltado para agricultura familiar sustentável"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        if (status === 201 || status === 200) {
+          test("Deve registrar a área de cultivo com sucesso", function() {
+            const dados = corpo.dados || corpo;
+            expect(dados.nome).to.equal("Cultivo de Feijão - Área Norte");
+            expect(dados.usuario_id).to.equal(1);
+          });
+        } else if (status === 400) {
+          test("Deve acusar erro se o dispositivo já estiver ocupado em outra plantação", function() {
+            expect(status).to.equal(400);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

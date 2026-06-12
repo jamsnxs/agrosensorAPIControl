@@ -1,0 +1,35 @@
+info:
+  name: criar
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/dispositivos
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "Arduino Mega Kit 01",
+        "tipo": "Arduino Mega 2560",
+        "status": "ATIVO"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        test("Deve criar o dispositivo de borda com sucesso", function() {
+          expect(status).to.equal(201);
+          expect(corpo.dados.nome).to.equal("Arduino Mega Kit 01");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,48 @@
+info:
+  name: buscarPorID
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:3000/api/usuarios/1
+  headers:
+    - name: ""
+      value: ""
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const usuario = res.getBody();
+
+        if (status === 200) {
+          test("Deve encontrar o usuário cadastrado pelo ID", function() {
+            expect(status).to.equal(200);
+            expect(usuario).to.be.an('object');
+            expect(usuario).to.have.property('id');
+            expect(usuario.id).to.equal(1); // Garante que retornou exatamente o ID solicitado
+            expect(usuario).to.have.property('nome');
+            expect(usuario).to.have.property('email');
+          });
+        } else if (status === 404) {
+          test("Deve retornar 404 caso o ID não exista no banco", function() {
+            expect(status).to.equal(404);
+            // Verifica se seu MVC envia uma mensagem amigável no erro
+            if (usuario.erro) {
+              expect(usuario.erro).to.be.a('string');
+            }
+          });
+        } else {
+          test("Resposta inesperada do servidor", function() {
+            expect(status).to.be.oneOf([200, 404]);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

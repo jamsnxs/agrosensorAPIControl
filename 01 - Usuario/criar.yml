@@ -1,0 +1,51 @@
+info:
+  name: criar
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/usuarios
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "Bizinho",
+        "email": "bibi@agrosensor.com",
+        "senha": "senha123",
+        "telefone": "38988776655"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        if (status === 201) {
+          test("Deve criar um novo usuário com sucesso (Fluxo Principal)", function() {
+            expect(status).to.equal(201);
+            expect(corpo.nome).to.equal("João Silva");
+            expect(corpo.email).to.equal("joao@agrosensor.com");
+          });
+        } else if (status === 400) {
+          test("Deve barrar a criação e informar e-mail já existente (Fluxo de Exceção)", function() {
+            expect(status).to.equal(400);
+            expect(corpo.erro).to.equal("O endereço de e-mail já está sendo usado por outro usuário.");
+          });
+        } else {
+          test("Status code inesperado retornado pela API", function() {
+            expect(status).to.be.oneOf([201, 400]);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

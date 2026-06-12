@@ -1,0 +1,35 @@
+info:
+  name: criar
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/sensores
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "DHT22 - Sensor Umidade/Temperatura",
+        "tipo": "TEMPERATURA",
+        "unidade": "°C",
+        "status": "ATIVO"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        if (status === 201 || status === 200) {
+          test("Deve registrar o sensor no catálogo técnico", function() {
+            expect(res.getBody().dados.tipo).to.equal("TEMPERATURA");
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,35 @@
+info:
+  name: buscarPorID
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:3000/api/dispositivos/1
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const dispositivo = res.getBody();
+
+        if (status === 200) {
+          test("Deve encontrar o dispositivo correto pelo ID", function() {
+            expect(status).to.equal(200);
+            expect(dispositivo).to.be.an('object');
+            expect(dispositivo.id).to.equal(1);
+            expect(dispositivo).to.have.property('nome');
+          });
+        } else if (status === 404) {
+          test("Deve tratar ID inexistente com status 404", function() {
+            expect(status).to.equal(404);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

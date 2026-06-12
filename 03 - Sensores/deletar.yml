@@ -1,0 +1,31 @@
+info:
+  name: deletar
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: http://localhost:3000/api/sensores/6
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+
+        if (status === 200 || status === 204) {
+          test("Deve excluir o sensor físico do catálogo com sucesso", function() {
+            expect(status).to.be.oneOf([200, 204]);
+          });
+        } else if (status === 404) {
+          test("Deve retornar 404 indicando que o recurso já foi removido", function() {
+            expect(status).to.equal(404);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

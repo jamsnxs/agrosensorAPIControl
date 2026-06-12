@@ -1,0 +1,44 @@
+info:
+  name: deletar
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: http://localhost:3000/api/usuarios/4
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const resposta = res.getBody();
+
+        if (status === 200 || status === 204) {
+          test("Deve deletar o usuário com sucesso na primeira execução", function() {
+            // Aceita tanto 200 (OK com objeto retornado) quanto 204 (No Content)
+            expect(status).to.be.oneOf([200, 204]); 
+          });
+
+          if (status === 200 && resposta) {
+            test("Deve retornar os dados do usuário que foi deletado", function() {
+              expect(resposta.id).to.equal(3);
+            });
+          }
+
+        } else if (status === 404) {
+          test("Nas execuções seguintes, deve retornar 404 (Usuário já não existe)", function() {
+            expect(status).to.equal(404);
+          });
+        } else {
+          test("Resposta inesperada do servidor no método DELETE", function() {
+            expect(status).to.be.oneOf([200, 204, 404]);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

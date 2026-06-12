@@ -1,0 +1,7 @@
+info:
+  name: 03 - Sensores
+  type: folder
+  seq: 11
+
+request:
+  auth: inherit
