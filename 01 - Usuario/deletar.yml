@@ -5,7 +5,7 @@ info:
 
 http:
   method: DELETE
-  url: http://localhost:3000/api/usuarios/4
+  url: http://localhost:3000/api/usuarios/3
   auth: inherit
 
 runtime:
@@ -22,18 +22,18 @@ runtime:
           });
 
           if (status === 200 && resposta) {
-            test("Deve retornar os dados do usuário que foi deletado", function() {
-              expect(resposta.id).to.equal(3);
+            test("Deve retornar mensagem de confirmação da remoção", function() {
+              expect(resposta.mensagem).to.be.a('string');
             });
           }
 
-        } else if (status === 404) {
-          test("Nas execuções seguintes, deve retornar 404 (Usuário já não existe)", function() {
-            expect(status).to.equal(404);
+        } else if (status === 400) {
+          test("Nas execuções seguintes, deve retornar 400 (Usuário já não existe)", function() {
+            expect(status).to.equal(400);
           });
         } else {
           test("Resposta inesperada do servidor no método DELETE", function() {
-            expect(status).to.be.oneOf([200, 204, 404]);
+            expect(status).to.be.oneOf([200, 204, 400]);
           });
         }
 

@@ -11,10 +11,10 @@ http:
     data: |-
       {
         "nome": "DHT22 - Sensor Umidade/Temperatura",
-        "tipo": "TEMPERATURA",
+        "tipo": "temperatura",
         "unidade": "°C",
-        "status": "ATIVO"
-      }
+        "status": "Ativo"
+      } 
   auth: inherit
 
 runtime:
@@ -24,7 +24,7 @@ runtime:
         const status = res.getStatus();
         if (status === 201 || status === 200) {
           test("Deve registrar o sensor no catálogo técnico", function() {
-            expect(res.getBody().dados.tipo).to.equal("TEMPERATURA");
+            expect(res.getBody().dados.tipo).to.equal("temperatura");
           });
         }
 

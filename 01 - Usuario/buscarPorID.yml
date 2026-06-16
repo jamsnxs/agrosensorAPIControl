@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/usuarios/1
+  url: http://localhost:3000/api/usuarios/2
   headers:
     - name: ""
       value: ""
@@ -27,9 +27,9 @@ runtime:
             expect(usuario).to.have.property('nome');
             expect(usuario).to.have.property('email');
           });
-        } else if (status === 404) {
-          test("Deve retornar 404 caso o ID não exista no banco", function() {
-            expect(status).to.equal(404);
+        } else if (status === 400) {
+          test("Deve retornar 400 caso o ID não exista no banco", function() {
+            expect(status).to.equal(400);
             // Verifica se seu MVC envia uma mensagem amigável no erro
             if (usuario.erro) {
               expect(usuario.erro).to.be.a('string');
@@ -37,7 +37,7 @@ runtime:
           });
         } else {
           test("Resposta inesperada do servidor", function() {
-            expect(status).to.be.oneOf([200, 404]);
+            expect(status).to.be.oneOf([200, 400]);
           });
         }
 

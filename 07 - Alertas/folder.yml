@@ -1,7 +1,7 @@
 info:
-  name: 01 - Usuario
+  name: 07 - Alertas
   type: folder
-  seq: 1
+  seq: 7
 
 request:
   auth: inherit

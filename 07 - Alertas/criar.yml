@@ -1,0 +1,48 @@
+info:
+  name: criar
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/alertas
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "plantacao_id": 1,
+        "sensor_id": 1,
+        "tipo": "ATENCAO",
+        "mensagem": "Umidade do solo abaixo do nível de atenção",
+        "valor_lido": 15.0,
+        "limite_violado": 20.0
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        if (status === 201 || status === 200) {
+          test("Deve registrar alerta manual para a plantação", function() {
+            const dados = corpo.dados || corpo;
+            expect(dados).to.have.property('plantacao_id');
+            expect(dados).to.have.property('tipo');
+          });
+        } else if (status === 400) {
+          test("Deve barrar alerta com dados inválidos", function() {
+            expect(corpo.erro).to.be.a('string');
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

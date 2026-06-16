@@ -20,9 +20,9 @@ runtime:
             expect(plantacao.id).to.equal(1);
             expect(plantacao).to.have.property('nome');
           });
-        } else if (status === 404) {
-          test("Deve tratar plantação inexistente com status 404", function() {
-            expect(status).to.equal(404);
+        } else if (status === 400) {
+          test("Deve tratar plantação inexistente com status 400", function() {
+            expect(status).to.equal(400);
           });
         }
 

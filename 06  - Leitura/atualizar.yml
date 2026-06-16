@@ -1,16 +1,17 @@
 info:
   name: atualizar
   type: http
-  seq: 4
+  seq: 5
 
 http:
   method: PUT
-  url: http://localhost:3000/api/sensores/1
+  url: http://localhost:3000/api/leituras/1
   body:
     type: json
     data: |-
       {
-        "status": "Inativo"
+        "temperatura": 30.5,
+        "umidade_ar": 60.0
       }
   auth: inherit
 
@@ -21,14 +22,19 @@ runtime:
         const status = res.getStatus();
 
         if (status === 200) {
-          test("Deve alterar as propriedades cadastrais do sensor", function() {
+          test("Deve atualizar os campos da leitura com sucesso", function() {
             expect(status).to.equal(200);
             const dados = res.getBody().dados || res.getBody();
-            expect(dados.status).to.equal("Inativo");
+            expect(dados.temperatura).to.equal(30.5);
+            expect(dados.umidade_ar).to.equal(60.0);
           });
         } else if (status === 400) {
-          test("Deve falhar com 400 se o sensor não existir no banco", function() {
+          test("Deve retornar 400 se a leitura não existir", function() {
             expect(status).to.equal(400);
+          });
+        } else {
+          test("Resposta inesperada do servidor", function() {
+            expect(status).to.be.oneOf([200, 400]);
           });
         }
 

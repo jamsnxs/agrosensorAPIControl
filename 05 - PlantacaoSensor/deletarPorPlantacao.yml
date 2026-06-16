@@ -1,0 +1,38 @@
+info:
+  name: deletarPorPlantacao
+  type: http
+  seq: 7
+
+http:
+  method: DELETE
+  url: http://localhost:3000/api/plantacoes-sensores/plantacao/1
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+                const resposta = res.getBody();
+
+                if (status === 200) {
+                  test("Deve remover todos os vínculos da plantação", function() {
+                    expect(resposta.mensagem).to.be.a('string');
+                    expect(resposta.mensagem).to.match(/sensor(es)? desvinculado(s)?/);
+                  });
+                } else if (status === 400) {
+                  test("Deve retornar 400 se a plantação não tiver sensores vinculados", function() {
+                    expect(status).to.equal(400);
+                    expect(resposta.erro).to.be.a('string');
+                  });
+                } else {
+                  test("Resposta inesperada do servidor", function() {
+                    expect(status).to.be.oneOf([200, 400]);
+                  });
+                }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

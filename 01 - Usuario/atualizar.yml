@@ -28,26 +28,24 @@ runtime:
           });
 
           test("Deve persistir as modificações enviadas no payload", function() {
-            // Garante que o ID alterado é o mesmo da URL
-            expect(usuarioAlterado.id).to.equal(1);
-            
-            // Garante que o nome mudou para o valor que você enviou no Body
-            expect(usuarioAlterado.nome).to.equal("Bizinho");
+            const dados = usuarioAlterado.dados || usuarioAlterado;
+            expect(dados.id).to.equal(1);
+            expect(dados.nome).to.equal("Bizinho");
           });
 
           test("Deve manter os dados que não foram enviados no body", function() {
-            // Garante que o e-mail ou outras propriedades continuam existindo no objeto retornado
-            expect(usuarioAlterado).to.have.property('email');
-            expect(usuarioAlterado.email).to.be.a('string');
+            const dados = usuarioAlterado.dados || usuarioAlterado;
+            expect(dados).to.have.property('email');
+            expect(dados.email).to.be.a('string');
           });
 
-        } else if (status === 404) {
-          test("Deve retornar 404 se tentar atualizar um ID inexistente", function() {
-            expect(status).to.equal(404);
+        } else if (status === 400) {
+          test("Deve retornar 400 se tentar atualizar um ID inexistente", function() {
+            expect(status).to.equal(400);
           });
         } else {
           test("Resposta inesperada do servidor no método PUT", function() {
-            expect(status).to.be.oneOf([200, 404]);
+            expect(status).to.be.oneOf([200, 400]);
           });
         }
 

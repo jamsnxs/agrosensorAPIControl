@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "usuario_id": 1,
+        "usuario_id": 4,
         "dispositivo_id": 1,
         "nome": "Cultivo de Feijão - Área Norte",
         "tipo": "FEIJAO",

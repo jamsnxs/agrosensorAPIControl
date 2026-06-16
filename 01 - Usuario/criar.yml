@@ -13,8 +13,8 @@ http:
     type: json
     data: |-
       {
-        "nome": "Bizinho",
-        "email": "bibi@agrosensor.com",
+        "nome": "Carolaine",
+        "email": "carolaine@agrosensor.po",
         "senha": "senha123",
         "telefone": "38988776655"
       }
@@ -30,8 +30,8 @@ runtime:
         if (status === 201) {
           test("Deve criar um novo usuário com sucesso (Fluxo Principal)", function() {
             expect(status).to.equal(201);
-            expect(corpo.nome).to.equal("João Silva");
-            expect(corpo.email).to.equal("joao@agrosensor.com");
+            expect(corpo.dados.nome).to.equal("Carolaine");
+            expect(corpo.dados.email).to.equal("carolaine@agrosensor.po");
           });
         } else if (status === 400) {
           test("Deve barrar a criação e informar e-mail já existente (Fluxo de Exceção)", function() {

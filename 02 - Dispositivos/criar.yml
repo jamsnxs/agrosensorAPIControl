@@ -11,8 +11,8 @@ http:
     data: |-
       {
         "nome": "Arduino Mega Kit 01",
-        "tipo": "Arduino Mega 2560",
-        "status": "ATIVO"
+        "tipo": "Arduino_Mega",
+        "status": "Ativo"
       }
   auth: inherit
 

@@ -5,17 +5,29 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/leitura-sensores
+  url: http://localhost:3000/api/leituras/dashboard/1
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
-        test("Deve retornar a série temporal de dados para plotagem de gráficos no Frontend", function() {
-          expect(res.getStatus()).to.equal(200);
-          expect(res.getBody()).to.be.an('array');
-        });
+        const status = res.getStatus();
+        const dados = res.getBody();
+
+        if (status === 200) {
+          test("Deve retornar a última leitura da plantação para o dashboard", function() {
+            expect(dados).to.be.an('object');
+            expect(dados).to.have.property('id');
+            expect(dados).to.have.property('plantacao_id');
+            expect(dados).to.have.property('data_hora');
+          });
+        } else if (status === 400) {
+          test("Deve retornar 400 se não houver leituras para a plantação", function() {
+            expect(status).to.equal(400);
+            expect(dados.erro).to.be.a('string');
+          });
+        }
 
 settings:
   encodeUrl: true

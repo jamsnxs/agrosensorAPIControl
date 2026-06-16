@@ -1,0 +1,31 @@
+info:
+  name: buscarPorTipo
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: http://localhost:3000/api/sensores/tipo/temperatura
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const sensores = res.getBody();
+
+        if (status === 200) {
+          test("Deve filtrar sensores pelo tipo informado", function() {
+            expect(sensores).to.be.an('array');
+            if (sensores.length > 0) {
+              expect(sensores[0].tipo).to.equal('temperatura');
+            }
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "status": "MANUTENCAO"
+        "status": "Inativo"
       }
   auth: inherit
 
@@ -25,11 +25,11 @@ runtime:
             expect(status).to.equal(200);
             // Valida se o retorno segue a estrutura de dados padrão do seu MVC
             const dados = res.getBody().dados || res.getBody();
-            expect(dados.status).to.equal("MANUTENCAO");
+            expect(dados.status).to.equal("Inativo");
           });
-        } else if (status === 404) {
-          test("Deve retornar 404 ao tentar atualizar ID inexistente", function() {
-            expect(status).to.equal(404);
+        } else if (status === 400) {
+          test("Deve retornar 400 ao tentar atualizar ID inexistente", function() {
+            expect(status).to.equal(400);
           });
         }
 

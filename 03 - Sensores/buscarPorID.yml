@@ -22,9 +22,9 @@ runtime:
             expect(sensor).to.have.property('tipo');
             expect(sensor).to.have.property('unidade');
           });
-        } else if (status === 404) {
-          test("Deve retornar 404 caso o sensor não exista", function() {
-            expect(status).to.equal(404);
+        } else if (status === 400) {
+          test("Deve retornar 400 caso o sensor não exista", function() {
+            expect(status).to.equal(400);
           });
         }
 

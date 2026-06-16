@@ -1,0 +1,50 @@
+info:
+  name: buscarPorPlantacao
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://localhost:3000/api/plantacoes-sensores/plantacao/2
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+                const sensores = res.getBody();
+
+                if (status === 200) {
+                  test("Deve retornar lista de sensores vinculados à plantação", function() {
+                    expect(sensores).to.be.an('array');
+                  });
+
+                  test("Cada item deve conter dados do sensor e limites", function() {
+                    if (sensores.length > 0) {
+                      const item = sensores[0];
+                      expect(item).to.have.property('sensor_id');
+                      expect(item).to.have.property('limite_atencao');
+                      expect(item).to.have.property('limite_critico');
+                      expect(item).to.have.property('sensor');
+                      expect(item.sensor).to.have.property('nome');
+                      expect(item.sensor).to.have.property('tipo');
+                    }
+                  });
+
+                  test("Deve listar os sensores corretos baseado no seed", function() {
+                    const sensorUmidadeSolo = sensores.find(s => s.sensor_id === 1);
+                    expect(sensorUmidadeSolo).to.exist;
+                    expect(sensorUmidadeSolo.limite_atencao).to.equal(40);
+                  });
+                } else {
+                  test("Status code inesperado", function() {
+                    expect(status).to.equal(200);
+                  });
+                }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

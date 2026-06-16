@@ -8,11 +8,7 @@ http:
   url: http://localhost:3000/api/plantacoes/1
   body:
     type: json
-    data: |-
-      {
-        "nome": "Cultivo de Feijão - Área Norte Modificado",
-        "descricao": "Atualização das condições de manejo do solo"
-      }
+    data: ""
   auth: inherit
 
 runtime:
@@ -21,7 +17,7 @@ runtime:
       code: |-
         const status = res.getStatus();
         test("Deve remover ou barrar remoção caso contenha dependências vinculadas", function() {
-          expect(status).to.be.oneOf([200, 204, 404, 400]);
+          expect(status).to.be.oneOf([200, 204, 400]);
         });
 
 settings:

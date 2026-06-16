@@ -1,0 +1,24 @@
+info:
+  name: buscarTodos
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://localhost:3000/api/leituras
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Deve listar todas as leituras registradas", function() {
+          expect(res.getStatus()).to.equal(200);
+          expect(res.getBody()).to.be.an('array');
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

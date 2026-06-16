@@ -22,9 +22,9 @@ runtime:
             expect(dispositivo.id).to.equal(1);
             expect(dispositivo).to.have.property('nome');
           });
-        } else if (status === 404) {
-          test("Deve tratar ID inexistente com status 404", function() {
-            expect(status).to.equal(404);
+        } else if (status === 400) {
+          test("Deve tratar ID inexistente com status 400", function() {
+            expect(status).to.equal(400);
           });
         }
 

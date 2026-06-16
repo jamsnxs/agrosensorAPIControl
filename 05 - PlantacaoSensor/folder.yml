@@ -1,7 +1,7 @@
 info:
   name: 05 - PlantacaoSensor
   type: folder
-  seq: 25
+  seq: 5
 
 request:
   auth: inherit

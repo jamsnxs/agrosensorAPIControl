@@ -5,14 +5,14 @@ info:
 
 http:
   method: POST
-  url: http://localhost:3000/api/leitura-sensores
+  url: http://localhost:3000/api/leituras
   body:
     type: json
     data: |-
       {
         "plantacao_id": 1,
-        "umidadeSolo": 15.0,
-        "umidadeAr": 35.5,
+        "umidade_solo": 15.0,
+        "umidade_ar": 35.5,
         "temperatura": 38.2,
         "luminosidade": 85
       }
@@ -30,12 +30,11 @@ runtime:
             expect(status).to.be.oneOf([200, 201]);
           });
           
-          test("Deve avaliar as regras de negócio e verificar se gerou alertas automáticos no payload", function() {
-            // Como a umidadeSolo enviada foi 15.0 (abaixo do limite_critico de 20.0 configurado acima),
-            // seu backend MVC pode retornar um indicador de alertas disparados.
-            if(corpo.alertasGerados) {
-              expect(corpo.alertasGerados).to.equal(true);
-            }
+          test("Deve processar a leitura e retornar os dados persistidos", function() {
+            expect(corpo.dados).to.be.an('array');
+            expect(corpo.dados.length).to.be.at.least(1);
+            expect(corpo.dados[0]).to.have.property('id');
+            expect(corpo.dados[0]).to.have.property('plantacao_id');
           });
         }
 

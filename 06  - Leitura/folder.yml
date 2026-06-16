@@ -1,7 +1,7 @@
 info:
   name: 06  - Leitura
   type: folder
-  seq: 26
+  seq: 6
 
 request:
   auth: inherit
