@@ -1,0 +1,44 @@
+info:
+  name: me
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:3000/api/auth/me/
+  headers:
+    - name: Authorization
+      value: Bearer {{token}}
+  auth: inherit
+
+runtime:
+  variables:
+    - name: token
+      value: ""
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status e o corpo da resposta
+        const status = res.getStatus();
+        const usuario = res.getBody();
+
+        // Token válido (200), retorna os dados do usuário autenticado
+        if (status === 200) {
+          test("Deve retornar os dados do usuário logado", function() {
+            expect(usuario).to.be.an('object');
+            expect(usuario).to.have.property('id');
+            expect(usuario).to.have.property('nome');
+            expect(usuario).to.have.property('email');
+          });
+        // Token ausente ou inválido (401)
+        } else if (status === 401) {
+          test("Deve retornar 401 se o token não for fornecido", function() {
+            expect(usuario.erro).to.be.a('string');
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

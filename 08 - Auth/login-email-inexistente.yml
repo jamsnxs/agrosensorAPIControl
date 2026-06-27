@@ -1,0 +1,41 @@
+info:
+  name: login-email-inexistente
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:3000/api/auth/login
+  body:
+    type: json
+    data: |-
+      {
+        "email": "naoexiste@agro.po",
+        "senha": "qualquerSenha"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP e o corpo da resposta
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        // Email não cadastrado deve retornar 401
+        if (status === 401) {
+          test("Deve retornar 401 para email não cadastrado", function() {
+            expect(corpo.erro).to.be.a('string');
+          });
+        } else {
+          test("Status code inesperado", function() {
+            expect(status).to.equal(401);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

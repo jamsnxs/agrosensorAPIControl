@@ -1,0 +1,46 @@
+info:
+  name: login
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/auth/login
+  body:
+    type: json
+    data: |-
+      {
+        "email": "carolaine@agro.po",
+        "senha": "senhaSuperSegura123"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP e o corpo da resposta
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        // Login bem sucedido (200), verifica o token JWT e os dados do usuário
+        if (status === 200) {
+          test("Deve autenticar o usuário e retornar token JWT", function() {
+            expect(corpo.token).to.be.a('string');
+            expect(corpo.usuario).to.be.an('object');
+            expect(corpo.usuario).to.have.property('id');
+            expect(corpo.usuario).to.have.property('nome');
+            expect(corpo.usuario).to.have.property('email');
+          });
+        // Credenciais inválidas (401)
+        } else if (status === 401) {
+          test("Deve retornar 401 para credenciais inválidas", function() {
+            expect(corpo.erro).to.be.a('string');
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
