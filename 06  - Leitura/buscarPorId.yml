@@ -5,16 +5,18 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/leituras/1
+  url: http://localhost:3000/api/leituras/{{id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const leitura = res.getBody();
 
+        // Leitura encontrada (200), verifica todos os campos da telemetria
         if (status === 200) {
           test("Deve retornar a leitura com dados completos", function() {
             expect(leitura).to.be.an('object');
@@ -26,6 +28,7 @@ runtime:
             expect(leitura).to.have.property('umidade_solo');
             expect(leitura).to.have.property('luminosidade');
           });
+        // ID inexistente (400)
         } else if (status === 400) {
           test("Deve retornar 400 para leitura inexistente", function() {
             expect(status).to.equal(400);

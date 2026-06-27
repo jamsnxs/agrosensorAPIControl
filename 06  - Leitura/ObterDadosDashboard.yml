@@ -5,16 +5,18 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/leituras/dashboard/1
+  url: http://localhost:3000/api/leituras/dashboard/{{plantacao_id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const dados = res.getBody();
 
+        // Dashboard encontrado (200), verifica os campos da última leitura
         if (status === 200) {
           test("Deve retornar a última leitura da plantação para o dashboard", function() {
             expect(dados).to.be.an('object');
@@ -22,6 +24,7 @@ runtime:
             expect(dados).to.have.property('plantacao_id');
             expect(dados).to.have.property('data_hora');
           });
+        // Nenhuma leitura encontrada (400)
         } else if (status === 400) {
           test("Deve retornar 400 se não houver leituras para a plantação", function() {
             expect(status).to.equal(400);

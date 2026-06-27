@@ -5,12 +5,12 @@ info:
 
 http:
   method: PUT
-  url: http://localhost:3000/api/plantacoes/1
+  url: http://localhost:3000/api/plantacoes/{{id}}
   body:
     type: json
     data: |-
       {
-        "nome": "Cultivo de Feijão - Área Norte Modificado",
+        "nome": "Plantação Maluca",
         "descricao": "Atualização das condições de manejo do solo"
       }
   auth: inherit
@@ -19,7 +19,9 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status HTTP da resposta
         const status = res.getStatus();
+        // Atualização bem sucedida (200)
         if (status === 200) {
           test("Deve atualizar os metadados do cultivo", function() {
             const dados = res.getBody().dados || res.getBody();

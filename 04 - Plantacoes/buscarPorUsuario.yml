@@ -5,16 +5,18 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/plantacoes/usuario/4
+  url: http://localhost:3000/api/plantacoes/usuario/{{id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const plantacoes = res.getBody();
 
+        // Usuário encontrado (200), verifica se a lista tem a estrutura esperada
         if (status === 200) {
           test("Deve listar plantações vinculadas ao usuário", function() {
             expect(plantacoes).to.be.an('array');

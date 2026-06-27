@@ -10,10 +10,10 @@ http:
     type: json
     data: |-
       {
-        "plantacao_id": 3,
-        "sensor_id": 8,
-        "limite_atencao": 20.0,
-        "limite_critico": 40.0
+        "plantacao_id": "{{plantacao_id}}",
+        "sensor_id": "{{sensor_id}}",
+        "limite_atencao": 25.0,
+        "limite_critico": 10.0
       }
   auth: inherit
 
@@ -21,7 +21,9 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status HTTP da resposta
         const status = res.getStatus();
+        // Aceita criação (200/201) ou bloqueio por vínculo duplicado (400)
         test("Deve criar o vínculo de monitoramento e os gatilhos de limites hídricos", function() {
           expect(status).to.be.oneOf([200, 201, 400]);
         });

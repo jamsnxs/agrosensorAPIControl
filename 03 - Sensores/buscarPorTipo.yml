@@ -12,9 +12,11 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const sensores = res.getBody();
 
+        // Filtro bem sucedido (200), verifica o tipo do primeiro sensor
         if (status === 200) {
           test("Deve filtrar sensores pelo tipo informado", function() {
             expect(sensores).to.be.an('array');

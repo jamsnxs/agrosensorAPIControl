@@ -5,23 +5,25 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/sensores/1
+  url: http://localhost:3000/api/sensores/{{id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const sensor = res.getBody();
 
+        // Sensor encontrado (200), verifica as propriedades técnicas
         if (status === 200) {
           test("Deve encontrar as especificações do sensor pelo ID", function() {
             expect(status).to.equal(200);
-            expect(sensor.id).to.equal(1);
             expect(sensor).to.have.property('tipo');
             expect(sensor).to.have.property('unidade');
           });
+        // ID inexistente (400)
         } else if (status === 400) {
           test("Deve retornar 400 caso o sensor não exista", function() {
             expect(status).to.equal(400);

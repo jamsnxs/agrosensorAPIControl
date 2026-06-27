@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "nome": "Arduino Mega Kit 01",
+        "nome": "Arduino Mega 2560",
         "tipo": "Arduino_Mega",
         "status": "Ativo"
       }
@@ -20,12 +20,14 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status HTTP e o corpo da resposta
         const status = res.getStatus();
         const corpo = res.getBody();
 
+        // Confirma que o POST retornou 201 e o nome do dispositivo está correto
         test("Deve criar o dispositivo de borda com sucesso", function() {
           expect(status).to.equal(201);
-          expect(corpo.dados.nome).to.equal("Arduino Mega Kit 01");
+            expect(corpo.dados.nome).to.equal("Arduino Mega 2560");
         });
 
 settings:

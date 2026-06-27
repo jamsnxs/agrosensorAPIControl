@@ -10,18 +10,20 @@ http:
     type: json
     data: |-
       {
-        "nome": "DHT22 - Sensor Umidade/Temperatura",
+        "nome": "DHT22 - Sensor de Temperatura",
         "tipo": "temperatura",
         "unidade": "°C",
         "status": "Ativo"
-      } 
+      }
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status HTTP da resposta
         const status = res.getStatus();
+        // Criação bem sucedida (201) ou atualização (200)
         if (status === 201 || status === 200) {
           test("Deve registrar o sensor no catálogo técnico", function() {
             expect(res.getBody().dados.tipo).to.equal("temperatura");

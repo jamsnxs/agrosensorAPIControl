@@ -12,6 +12,7 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Confirma que o GET retornou 200 e o corpo é uma lista
         test("Deve listar os dispositivos cadastrados", function() {
           expect(res.getStatus()).to.equal(200);
           expect(res.getBody()).to.be.an('array');

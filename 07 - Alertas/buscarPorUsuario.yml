@@ -5,16 +5,18 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/alertas/usuario/4
+  url: http://localhost:3000/api/alertas/usuario/{{usuario_id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const alertas = res.getBody();
 
+        // Usuário encontrado (200), verifica se a lista de alertas foi retornada
         if (status === 200) {
           test("Deve listar alertas de todas as plantações do usuário", function() {
             expect(alertas).to.be.an('array');

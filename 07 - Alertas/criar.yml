@@ -13,8 +13,8 @@ http:
     type: json
     data: |-
       {
-        "plantacao_id": 1,
-        "sensor_id": 1,
+        "plantacao_id": "{{plantacao_id}}",
+        "sensor_id": "{{sensor_id}}",
         "tipo": "ATENCAO",
         "mensagem": "Umidade do solo abaixo do nível de atenção",
         "valor_lido": 15.0,
@@ -26,15 +26,18 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status HTTP e o corpo da resposta
         const status = res.getStatus();
         const corpo = res.getBody();
 
+        // Alerta registrado com sucesso (200/201)
         if (status === 201 || status === 200) {
           test("Deve registrar alerta manual para a plantação", function() {
             const dados = corpo.dados || corpo;
             expect(dados).to.have.property('plantacao_id');
             expect(dados).to.have.property('tipo');
           });
+        // Dados inválidos (400)
         } else if (status === 400) {
           test("Deve barrar alerta com dados inválidos", function() {
             expect(corpo.erro).to.be.a('string');

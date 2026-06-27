@@ -13,10 +13,10 @@ http:
     type: json
     data: |-
       {
-        "nome": "Carolaine",
-        "email": "carolaine@agrosensor.po",
-        "senha": "senha123",
-        "telefone": "38988776655"
+        "nome": "Carolaine Gamer",
+        "email": "carolaine@agro.po",
+        "senha": "senhaSuperSegura123",
+        "telefone": "3395785902"
       }
   auth: inherit
 
@@ -24,17 +24,20 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status HTTP e o corpo da resposta
         const status = res.getStatus();
         const corpo = res.getBody();
 
+        // Se a criação foi bem sucedida (201), confere os dados retornados
         if (status === 201) {
-          test("Deve criar um novo usuário com sucesso (Fluxo Principal)", function() {
+          test("Deve criar um novo usuário com sucesso", function() {
             expect(status).to.equal(201);
-            expect(corpo.dados.nome).to.equal("Carolaine");
-            expect(corpo.dados.email).to.equal("carolaine@agrosensor.po");
+            expect(corpo.dados.nome).to.equal("Carolaine Gamer");
+            expect(corpo.dados.email).to.equal("carolaine@agro.po");
           });
+        // Se o email já existe no banco (400), verifica a mensagem de erro
         } else if (status === 400) {
-          test("Deve barrar a criação e informar e-mail já existente (Fluxo de Exceção)", function() {
+          test("Deve barrar a criação e informar e-mail já existente", function() {
             expect(status).to.equal(400);
             expect(corpo.erro).to.equal("O endereço de e-mail já está sendo usado por outro usuário.");
           });

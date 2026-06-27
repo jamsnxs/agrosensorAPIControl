@@ -5,20 +5,23 @@ info:
 
 http:
   method: DELETE
-  url: http://localhost:3000/api/plantacoes-sensores/3
+  url: http://localhost:3000/api/plantacoes-sensores/{{id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
                 const resposta = res.getBody();
 
+                // Remoção bem sucedida (200)
                 if (status === 200) {
                   test("Deve remover o vínculo plantação-sensor com sucesso", function() {
                     expect(resposta.mensagem).to.be.a('string');
                   });
+                // Vínculo já removido (400)
                 } else if (status === 400) {
                   test("Nas execuções seguintes, deve retornar 400 (vínculo já removido)", function() {
                     expect(status).to.equal(400);

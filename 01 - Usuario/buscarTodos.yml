@@ -5,36 +5,33 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/usuarios
-  params:
-    - name: ""
-      value: ""
-      type: query
+  url: http://localhost:3000/api/usuarios/
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const usuarios = res.getBody();
 
+        // Confirma que o GET retornou 200
         test("Deve retornar status 200 ao listar usuários", function() {
           expect(status).to.equal(200);
         });
 
+        // Verifica se a resposta é uma lista com a estrutura esperada
         test("Deve retornar uma lista de usuários válida", function() {
-          // Garante que o backend respondeu com um array (lista)
           expect(usuarios).to.be.an('array');
-          
-          // Se houver algum usuário na lista, valida se ele possui a estrutura básica do Schema
+
           if (usuarios.length > 0) {
             const primeiroUsuario = usuarios[0];
             expect(primeiroUsuario).to.have.property('id');
             expect(primeiroUsuario).to.have.property('nome');
             expect(primeiroUsuario).to.have.property('email');
-            // Segurança: opcionalmente, você pode checar se a senha NÃO está sendo exposta por segurança
-            expect(primeiroUsuario).to.not.have.property('senha_plena'); 
+            // Verifica se a senha não está exposta na listagem
+            expect(primeiroUsuario).to.not.have.property('senha_plena');
           }
         });
 

@@ -5,16 +5,18 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/alertas/plantacao/1
+  url: http://localhost:3000/api/alertas/plantacao/{{plantacao_id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const alertas = res.getBody();
 
+        // Plantação encontrada (200), verifica a lista de alertas
         if (status === 200) {
           test("Deve listar alertas de uma plantação específica", function() {
             expect(alertas).to.be.an('array');

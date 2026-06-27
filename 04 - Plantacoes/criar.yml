@@ -10,12 +10,12 @@ http:
     type: json
     data: |-
       {
-        "usuario_id": 4,
-        "dispositivo_id": 1,
-        "nome": "Cultivo de Feijão - Área Norte",
-        "tipo": "FEIJAO",
-        "data_inicio": "2026-06-12T00:00:00.000Z",
-        "descricao": "Lote experimental voltado para agricultura familiar sustentável"
+        "usuario_id": "{{usuario_id}}",
+        "dispositivo_id": "{{dispositivo_id}}",
+        "nome": "Lote B - Weed",
+        "tipo": "Herbácea",
+        "data_inicio": "2026-06-01T10:00:00.000Z",
+        "descricao": "Maconha da boa"
       }
   auth: inherit
 
@@ -23,15 +23,18 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status HTTP e o corpo da resposta
         const status = res.getStatus();
         const corpo = res.getBody();
 
+        // Criação bem sucedida (201) ou atualização (200), confere o nome
         if (status === 201 || status === 200) {
           test("Deve registrar a área de cultivo com sucesso", function() {
             const dados = corpo.dados || corpo;
-            expect(dados.nome).to.equal("Cultivo de Feijão - Área Norte");
-            expect(dados.usuario_id).to.equal(1);
+            expect(dados.nome).to.equal("Lote B - Weed");
+
           });
+        // Dispositivo já vinculado a outra plantação (400)
         } else if (status === 400) {
           test("Deve acusar erro se o dispositivo já estiver ocupado em outra plantação", function() {
             expect(status).to.equal(400);

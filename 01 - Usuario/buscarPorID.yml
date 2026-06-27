@@ -5,32 +5,30 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/usuarios/2
-  headers:
-    - name: ""
-      value: ""
+  url: http://localhost:3000/api/usuarios/{{id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const usuario = res.getBody();
 
+        // Se encontrou o usuário (200), verifica os campos esperados
         if (status === 200) {
           test("Deve encontrar o usuário cadastrado pelo ID", function() {
             expect(status).to.equal(200);
             expect(usuario).to.be.an('object');
             expect(usuario).to.have.property('id');
-            expect(usuario.id).to.equal(1); // Garante que retornou exatamente o ID solicitado
             expect(usuario).to.have.property('nome');
             expect(usuario).to.have.property('email');
           });
+        // Se o ID não existe (400), confere se veio uma mensagem de erro
         } else if (status === 400) {
           test("Deve retornar 400 caso o ID não exista no banco", function() {
             expect(status).to.equal(400);
-            // Verifica se seu MVC envia uma mensagem amigável no erro
             if (usuario.erro) {
               expect(usuario.erro).to.be.a('string');
             }

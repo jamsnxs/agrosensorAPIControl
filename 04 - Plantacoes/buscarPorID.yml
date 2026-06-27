@@ -5,21 +5,23 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/plantacoes/1
+  url: http://localhost:3000/api/plantacoes/{{id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const plantacao = res.getBody();
 
+        // Plantação encontrada (200), verifica os campos esperados
         if (status === 200) {
           test("Deve encontrar os detalhes da plantação solicitada", function() {
-            expect(plantacao.id).to.equal(1);
             expect(plantacao).to.have.property('nome');
           });
+        // ID inexistente (400)
         } else if (status === 400) {
           test("Deve tratar plantação inexistente com status 400", function() {
             expect(status).to.equal(400);

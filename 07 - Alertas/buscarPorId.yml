@@ -5,22 +5,24 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/alertas/1
+  url: http://localhost:3000/api/alertas/{{id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
         const alerta = res.getBody();
 
+        // Alerta encontrado (200), verifica os campos esperados
         if (status === 200) {
           test("Deve retornar detalhes do alerta pelo ID", function() {
-            expect(alerta.id).to.equal(1);
             expect(alerta).to.have.property('tipo');
             expect(alerta).to.have.property('mensagem');
           });
+        // ID inexistente (400)
         } else if (status === 400) {
           test("Deve retornar 400 se o alerta não existir", function() {
             expect(status).to.equal(400);

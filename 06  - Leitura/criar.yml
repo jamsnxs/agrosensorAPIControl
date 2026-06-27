@@ -10,11 +10,8 @@ http:
     type: json
     data: |-
       {
-        "plantacao_id": 1,
-        "umidade_solo": 15.0,
-        "umidade_ar": 35.5,
-        "temperatura": 38.2,
-        "luminosidade": 85
+        "plantacao_id": "{{plantacao_id}}",
+        "luminosidade": 55.0
       }
   auth: inherit
 
@@ -22,14 +19,17 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status HTTP e o corpo da resposta
         const status = res.getStatus();
         const corpo = res.getBody();
 
+        // Leitura registrada com sucesso (200/201)
         if (status === 201 || status === 200) {
           test("Deve receber, processar e persistir o pacote de telemetria no SQLite", function() {
             expect(status).to.be.oneOf([200, 201]);
           });
           
+          // Verifica se os dados retornados contêm os campos esperados
           test("Deve processar a leitura e retornar os dados persistidos", function() {
             expect(corpo.dados).to.be.an('array');
             expect(corpo.dados.length).to.be.at.least(1);

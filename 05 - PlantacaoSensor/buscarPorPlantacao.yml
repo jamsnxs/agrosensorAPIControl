@@ -5,21 +5,24 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/plantacoes-sensores/plantacao/2
+  url: http://localhost:3000/api/plantacoes-sensores/plantacao/{{plantacao_id}}
   auth: inherit
 
 runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status e o corpo da resposta
         const status = res.getStatus();
                 const sensores = res.getBody();
 
+                // Plantação encontrada (200), verifica a lista de vínculos
                 if (status === 200) {
                   test("Deve retornar lista de sensores vinculados à plantação", function() {
                     expect(sensores).to.be.an('array');
                   });
 
+                  // Confere a estrutura de cada item: sensor, limites, vínculos
                   test("Cada item deve conter dados do sensor e limites", function() {
                     if (sensores.length > 0) {
                       const item = sensores[0];
@@ -32,6 +35,7 @@ runtime:
                     }
                   });
 
+                  // Valida os dados do seed: sensor_id=1 com limite_atencao=40
                   test("Deve listar os sensores corretos baseado no seed", function() {
                     const sensorUmidadeSolo = sensores.find(s => s.sensor_id === 1);
                     expect(sensorUmidadeSolo).to.exist;

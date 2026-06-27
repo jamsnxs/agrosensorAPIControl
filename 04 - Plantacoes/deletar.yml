@@ -5,7 +5,7 @@ info:
 
 http:
   method: DELETE
-  url: http://localhost:3000/api/plantacoes/1
+  url: http://localhost:3000/api/plantacoes/{{id}}
   body:
     type: json
     data: ""
@@ -15,7 +15,9 @@ runtime:
   scripts:
     - type: tests
       code: |-
+        // Captura o status HTTP da resposta
         const status = res.getStatus();
+        // Aceita remoção (200/204) ou bloqueio por dependências (400)
         test("Deve remover ou barrar remoção caso contenha dependências vinculadas", function() {
           expect(status).to.be.oneOf([200, 204, 400]);
         });
