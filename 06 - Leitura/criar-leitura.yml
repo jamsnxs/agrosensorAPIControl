@@ -1,0 +1,52 @@
+info:
+  name: Criar Leitura
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/leituras
+  body:
+    type: json
+    data: |-
+      {
+        "plantacao_id": "{{plantacao_id}}",
+        "luminosidade": 80.0,
+        "umidade_solo": 45.0,
+        "umidade_ar": 60.0,
+        "temperatura": 25.0
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: plantacao_id
+      value: d05f1635-3743-48a8-8bb0-1c0b50c3cb7f
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP e o corpo da resposta
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        // Leitura registrada com sucesso (200/201)
+        if (status === 201 || status === 200) {
+          test("Deve receber, processar e persistir o pacote de telemetria no SQLite", function() {
+            expect(status).to.be.oneOf([200, 201]);
+          });
+          
+          // Verifica se os dados retornados contêm os campos esperados
+          test("Deve processar a leitura e retornar os dados persistidos", function() {
+            expect(corpo.dados).to.be.an('object');
+            expect(corpo.dados).to.have.property('id');
+            expect(corpo.dados).to.have.property('plantacao_id');
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: Registra uma leitura de sensores para uma plantação

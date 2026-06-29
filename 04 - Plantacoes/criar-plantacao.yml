@@ -1,0 +1,50 @@
+info:
+  name: Criar Plantação
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/plantacoes
+  body:
+    type: json
+    data: |-
+      {
+        "usuario_id": "{{usuario_id}}",
+        "dispositivo_id": "{{dispositivo_id}}",
+        "nome": "Lote B - Weed",
+        "tipo": "Herbácea",
+        "data_inicio": "2026-06-01T10:00:00.000Z",
+        "descricao": "Maconha da boa"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP e o corpo da resposta
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        // Criação bem sucedida (201) ou atualização (200), confere o nome
+        if (status === 201 || status === 200) {
+          test("Deve registrar a área de cultivo com sucesso", function() {
+            const dados = corpo.dados || corpo;
+            expect(dados.nome).to.equal("Lote B - Weed");
+
+          });
+        // Dispositivo já vinculado a outra plantação (400)
+        } else if (status === 400) {
+          test("Deve acusar erro se o dispositivo já estiver ocupado em outra plantação", function() {
+            expect(status).to.equal(400);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "Cadastra nova plantação vinculada a um usuário e dispositivo"

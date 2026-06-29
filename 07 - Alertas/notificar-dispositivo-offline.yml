@@ -1,0 +1,44 @@
+info:
+  name: Notificar Dispositivo Offline
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: http://localhost:3000/api/alertas/dispositivo-offline
+  body:
+    type: json
+    data: |-
+      {
+        "plantacao_id": "{{plantacao_id}}",
+        "mensagem": "⚠️ Dispositivo offline há mais de 25 minutos!"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: plantacao_id
+      value: d05f1635-3743-48a8-8bb0-1c0b50c3cb7f
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        if (status === 200) {
+          test("Deve notificar offline via WhatsApp", function() {
+            expect(corpo.mensagem).to.be.a('string');
+          });
+        } else if (status === 400) {
+          test("Deve rejeitar requisição sem plantacao_id", function() {
+            expect(corpo.erro).to.be.a('string');
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: Dispara notificação WhatsApp informando que o dispositivo está offline

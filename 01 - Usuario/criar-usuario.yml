@@ -1,0 +1,56 @@
+info:
+  name: Criar Usuário
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/usuarios
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "Carolaine Gamer",
+        "email": "carolaine@agro.po",
+        "senha": "senhaSuperSegura123",
+        "telefone": "3395785902"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP e o corpo da resposta
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        // Se a criação foi bem sucedida (201), confere os dados retornados
+        if (status === 201) {
+          test("Deve criar um novo usuário com sucesso", function() {
+            expect(status).to.equal(201);
+            expect(corpo.dados.nome).to.equal("Carolaine Gamer");
+            expect(corpo.dados.email).to.equal("carolaine@agro.po");
+          });
+        // Se o email já existe no banco (400), verifica a mensagem de erro
+        } else if (status === 400) {
+          test("Deve barrar a criação e informar e-mail já existente", function() {
+            expect(status).to.equal(400);
+            expect(corpo.erro).to.equal("O endereço de e-mail já está sendo usado por outro usuário.");
+          });
+        } else {
+          test("Status code inesperado retornado pela API", function() {
+            expect(status).to.be.oneOf([201, 400]);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "Cria usuário, é obrigatorio 4 campos: nome, email, senha e telefone"

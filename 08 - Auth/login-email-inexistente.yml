@@ -1,5 +1,5 @@
 info:
-  name: login-email-inexistente
+  name: Login Email Inexistente
   type: http
   seq: 3
 
@@ -39,3 +39,5 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+
+docs: "Testa login com email não cadastrado (deve retornar 401)"

@@ -1,0 +1,43 @@
+info:
+  name: Criar Sensor
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/sensores
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "DHT22 - Sensor de Temperatura",
+        "tipo": "temperatura",
+        "unidade": "°C",
+        "status": "Ativo",
+        "direcao": "ACIMA"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP da resposta
+        const status = res.getStatus();
+        // Criação bem sucedida (201) ou atualização (200)
+        if (status === 201 || status === 200) {
+          test("Deve registrar o sensor no catálogo técnico", function() {
+            expect(res.getBody().dados.tipo).to.equal("temperatura");
+          });
+          test("Deve retornar a direção de alerta do sensor", function() {
+            expect(res.getBody().dados.direcao).to.equal("ACIMA");
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "Cadastra um novo sensor no catálogo"

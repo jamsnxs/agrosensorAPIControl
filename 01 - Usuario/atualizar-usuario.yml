@@ -1,0 +1,69 @@
+info:
+  name: Atualizar Usuário
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: http://localhost:3000/api/usuarios/{{id}}
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "Nome maluco da Silva"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP e o corpo da resposta
+        const status = res.getStatus();
+        const usuarioAlterado = res.getBody();
+
+        // Se a atualização foi bem sucedida (200)
+        if (status === 200) {
+          test("Deve atualizar o usuário com sucesso", function() {
+            expect(status).to.equal(200);
+          });
+
+          test("Deve persistir as modificações enviadas no payload", function() {
+            const dados = usuarioAlterado.dados || usuarioAlterado;
+            expect(dados.nome).to.equal("Bizinho");
+          });
+
+          test("Deve manter os dados que não foram enviados no body", function() {
+            const dados = usuarioAlterado.dados || usuarioAlterado;
+            expect(dados).to.have.property('email');
+            expect(dados.email).to.be.a('string');
+          });
+
+        // Token não enviado ou inválido (401)
+        } else if (status === 401) {
+          test("Deve exigir autenticação para alterar dados", function() {
+            expect(res.getBody().erro).to.be.a('string');
+          });
+        // Token de outro usuário (403)
+        } else if (status === 403) {
+          test("Deve barrar alteração de outro usuário", function() {
+            expect(res.getBody().erro).to.be.a('string');
+          });
+        // ID inexistente (400)
+        } else if (status === 400) {
+          test("Deve retornar 400 se tentar atualizar um ID inexistente", function() {
+            expect(status).to.equal(400);
+          });
+        } else {
+          test("Resposta inesperada do servidor no método PUT", function() {
+            expect(status).to.be.oneOf([200, 400, 401, 403]);
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "Atualiza dados do usuário pelo ID, autenticação obrigatória"

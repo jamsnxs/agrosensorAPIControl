@@ -1,0 +1,54 @@
+info:
+  name: Criar Alerta
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/alertas
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "leitura_id": "{{leitura_id}}",
+        "usuario_id": "{{usuario_id}}",
+        "plantacao_id": "{{plantacao_id}}",
+        "tipo": "Critico",
+        "mensagem": "Alerta Crítico: Umidade do solo abaixo do nível crítico",
+        "notificacao": false
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP e o corpo da resposta
+        const status = res.getStatus();
+        const corpo = res.getBody();
+
+        // Alerta registrado com sucesso (200/201)
+        if (status === 201 || status === 200) {
+          test("Deve registrar alerta manual para a plantação", function() {
+            const dados = corpo.dados || corpo;
+            expect(dados).to.have.property('plantacao_id');
+            expect(dados).to.have.property('tipo');
+            expect(dados).to.have.property('mensagem');
+          });
+        // Dados inválidos (400)
+        } else if (status === 400) {
+          test("Deve barrar alerta com dados inválidos", function() {
+            expect(corpo.erro).to.be.a('string');
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "Registra um alerta manual para uma plantação"

@@ -1,0 +1,38 @@
+info:
+  name: Buscar Resumo por Plantação
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: http://localhost:3000/api/alertas/resumo/{{plantacao_id}}
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const status = res.getStatus();
+        const dados = res.getBody();
+
+        if (status === 200) {
+          test("Deve retornar resumo de alertas da plantação", function() {
+            expect(dados).to.be.an('object');
+            expect(dados).to.have.property('total');
+            expect(dados).to.have.property('atencao');
+            expect(dados).to.have.property('critico');
+            expect(dados).to.have.property('ultimos_7_dias');
+            expect(dados.total).to.be.a('number');
+            expect(dados.atencao).to.be.a('number');
+            expect(dados.critico).to.be.a('number');
+            expect(dados.ultimos_7_dias).to.be.a('number');
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "Retorna sumarização de alertas de uma plantação"

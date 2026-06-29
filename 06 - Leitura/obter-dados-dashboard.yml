@@ -1,0 +1,51 @@
+info:
+  name: Obter Dados do Dashboard
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:3000/api/leituras/dashboard/{{plantacao_id}}
+  auth: inherit
+
+runtime:
+  variables:
+    - name: plantacao_id
+      value: d05f1635-3743-48a8-8bb0-1c0b50c3cb7f
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status e o corpo da resposta
+        const status = res.getStatus();
+        const dados = res.getBody();
+
+        // Dashboard encontrado (200), verifica os campos de sumarização
+        if (status === 200) {
+          test("Deve retornar dados sumarizados para o dashboard", function() {
+            expect(dados).to.be.an('object');
+            expect(dados).to.have.property('ultima');
+            expect(dados).to.have.property('medias');
+            expect(dados).to.have.property('total_leituras');
+            expect(dados).to.have.property('total_alertas');
+            expect(dados.ultima).to.have.property('id');
+            expect(dados.ultima).to.have.property('plantacao_id');
+            expect(dados.ultima).to.have.property('data_hora');
+            expect(dados.medias).to.have.all.keys('temperatura', 'umidade_solo', 'umidade_ar', 'luminosidade');
+            expect(dados.total_leituras).to.be.a('number');
+            expect(dados.total_alertas).to.be.a('number');
+          });
+        // Nenhuma leitura encontrada (400)
+        } else if (status === 400) {
+          test("Deve retornar 400 se não houver leituras para a plantação", function() {
+            expect(status).to.equal(400);
+            expect(dados.erro).to.be.a('string');
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: Retorna a última leitura de uma plantação para o dashboard

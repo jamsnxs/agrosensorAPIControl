@@ -1,0 +1,30 @@
+info:
+  name: Listar Alertas
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:3000/api/alertas?pagina=1&limite=50
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Confirma que o GET retornou 200 com paginação
+        test("Deve listar alertas com paginação", function() {
+          expect(res.getStatus()).to.equal(200);
+          expect(res.getBody()).to.have.property('dados').that.is.an('array');
+          expect(res.getBody()).to.have.property('total').that.is.a('number');
+          expect(res.getBody()).to.have.property('pagina').that.is.a('number');
+          expect(res.getBody()).to.have.property('totalPaginas').that.is.a('number');
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "Lista todos os alertas gerados"

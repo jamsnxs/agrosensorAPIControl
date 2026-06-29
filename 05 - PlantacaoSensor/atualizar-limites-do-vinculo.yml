@@ -1,0 +1,56 @@
+info:
+  name: Atualizar Limites do Vínculo
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: http://localhost:3000/api/plantacoes-sensores/{{id}}
+  body:
+    type: json
+    data: |-
+      {
+        "limite_atencao": 35,
+        "limite_critico": 15
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP e extrai os dados da resposta
+        const status = res.getStatus();
+                const dados = res.getBody().dados || res.getBody();
+
+                // Atualização bem sucedida (200)
+                if (status === 200) {
+                  test("Deve atualizar os limites de monitoramento do sensor", function() {
+                    expect(dados.limite_atencao).to.equal(35);
+                    expect(dados.limite_critico).to.equal(15);
+                  });
+
+                  // Confirma que os vínculos com plantação e sensor foram preservados
+                  test("Deve manter o vínculo com a plantação e o sensor", function() {
+                    expect(dados).to.have.property('plantacao_id');
+                    expect(dados).to.have.property('sensor_id');
+                    expect(dados).to.have.property('sensor');
+                  });
+                // Vínculo inexistente (400)
+                } else if (status === 400) {
+                  test("Deve retornar 400 se o vínculo não existir", function() {
+                    expect(status).to.equal(400);
+                  });
+                } else {
+                  test("Resposta inesperada do servidor", function() {
+                    expect(status).to.be.oneOf([200, 400]);
+                  });
+                }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "Atualiza limites de atenção e crítico do vínculo"

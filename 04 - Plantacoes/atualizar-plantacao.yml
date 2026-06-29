@@ -1,0 +1,38 @@
+info:
+  name: Atualizar Plantação
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: http://localhost:3000/api/plantacoes/{{id}}
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "Plantação Maluca",
+        "descricao": "Atualização das condições de manejo do solo"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        // Captura o status HTTP da resposta
+        const status = res.getStatus();
+        // Atualização bem sucedida (200)
+        if (status === 200) {
+          test("Deve atualizar os metadados do cultivo", function() {
+            const dados = res.getBody().dados || res.getBody();
+            expect(dados.nome).to.equal("Cultivo de Feijão - Área Norte Modificado");
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "Atualiza dados da plantação pelo ID"
