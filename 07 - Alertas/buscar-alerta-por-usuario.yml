@@ -9,6 +9,9 @@ http:
   auth: inherit
 
 runtime:
+  variables:
+    - name: usuario_id
+      value: b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e
   scripts:
     - type: tests
       code: |-
@@ -29,4 +32,4 @@ settings:
   followRedirects: true
   maxRedirects: 5
 
-docs: "Lista alertas de todas as plantações de um usuário"
+docs: Lista alertas de todas as plantações de um usuário
