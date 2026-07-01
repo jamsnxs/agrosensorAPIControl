@@ -9,6 +9,9 @@ http:
   auth: inherit
 
 runtime:
+  variables:
+    - name: plantacao_id
+      value: d05f1635-3743-48a8-8bb0-1c0b50c3cb7f
   scripts:
     - type: tests
       code: |-
@@ -35,4 +38,4 @@ settings:
   followRedirects: true
   maxRedirects: 5
 
-docs: "Retorna sumarização de alertas de uma plantação"
+docs: Retorna sumarização de alertas de uma plantação
